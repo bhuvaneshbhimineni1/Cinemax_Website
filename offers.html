@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CINEMAX — Offers & Deals</title>
+<style id="sharedStyle"></style>
+<style>
+.offers-hero{padding:4rem 4rem 3rem;background:linear-gradient(to bottom,var(--surface),var(--bg));text-align:center}
+.oh-title{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;letter-spacing:6px;margin-bottom:.5rem}
+.oh-sub{color:var(--muted);font-size:.9rem;max-width:480px;margin:0 auto}
+
+.offers-grid{padding:3rem 4rem 2rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
+.offer-card{border-radius:16px;overflow:hidden;border:1.5px solid var(--border);transition:all .25s;cursor:pointer;position:relative}
+.offer-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.4)}
+.offer-card.gold-card{background:linear-gradient(135deg,#1e1a10,#2a2210);border-color:rgba(232,201,109,.4)}
+.offer-card.teal-card{background:linear-gradient(135deg,#0f1e1c,#152522);border-color:rgba(109,232,201,.3)}
+.offer-card.red-card{background:linear-gradient(135deg,#1e1010,#2a1515);border-color:rgba(255,107,107,.3)}
+.offer-card.purple-card{background:linear-gradient(135deg,#14101e,#1d1628);border-color:rgba(139,92,246,.3)}
+.offer-inner{padding:2rem}
+.offer-icon{font-size:3rem;margin-bottom:1rem}
+.offer-tag{display:inline-block;font-size:.62rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 9px;border-radius:4px;margin-bottom:.8rem}
+.tag-gold{background:rgba(232,201,109,.2);color:var(--accent);border:1px solid rgba(232,201,109,.3)}
+.tag-teal{background:rgba(109,232,201,.15);color:var(--accent3);border:1px solid rgba(109,232,201,.25)}
+.tag-red{background:rgba(255,107,107,.15);color:var(--accent2);border:1px solid rgba(255,107,107,.25)}
+.tag-purple{background:rgba(139,92,246,.15);color:var(--purple);border:1px solid rgba(139,92,246,.25)}
+.offer-title{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:3px;margin-bottom:.6rem}
+.offer-desc{color:var(--muted);font-size:.83rem;line-height:1.6;margin-bottom:1.5rem}
+.offer-val{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;line-height:1;margin-bottom:.3rem}
+.offer-val.gold-text{color:var(--accent)}
+.offer-val.teal-text{color:var(--accent3)}
+.offer-val.red-text{color:var(--accent2)}
+.offer-val.purple-text{color:var(--purple)}
+.offer-val-sub{font-size:.72rem;color:var(--muted);letter-spacing:1px;margin-bottom:1.5rem}
+.offer-code-box{background:rgba(0,0,0,.2);border-radius:8px;padding:.7rem 1rem;display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;border:1px dashed rgba(255,255,255,.1)}
+.offer-code{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:4px}
+.copy-btn{font-size:.7rem;letter-spacing:1px;text-transform:uppercase;background:transparent;border:1px solid var(--border);border-radius:5px;padding:.3rem .7rem;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.copy-btn:hover{border-color:var(--muted);color:var(--text)}
+.copy-btn.copied{border-color:var(--green);color:var(--green)}
+.offer-exp{font-size:.72rem;color:var(--muted)}
+.offer-bg-deco{position:absolute;right:-20px;bottom:-20px;font-size:8rem;opacity:.05;pointer-events:none;user-select:none}
+
+/* MEMBERSHIP */
+.membership-section{padding:3rem 4rem 5rem}
+.mem-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:2rem}
+.mem-card{background:var(--card);border-radius:16px;padding:2rem;border:2px solid var(--border);transition:all .25s;text-align:center;position:relative;overflow:hidden}
+.mem-card:hover{transform:translateY(-4px)}
+.mem-card.featured{border-color:var(--accent);background:linear-gradient(135deg,#1e1a10,var(--card))}
+.mem-badge2{position:absolute;top:0;right:0;background:var(--accent);color:var(--bg);font-size:.6rem;font-weight:700;letter-spacing:1.5px;padding:4px 12px;border-radius:0 0 0 10px;text-transform:uppercase}
+.mem-tier{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:3px;margin-bottom:.5rem}
+.mem-price{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;color:var(--accent);letter-spacing:2px;line-height:1}
+.mem-period{font-size:.75rem;color:var(--muted);margin-bottom:1.5rem}
+.mem-perks{list-style:none;text-align:left;margin-bottom:2rem}
+.mem-perks li{font-size:.82rem;color:var(--muted);padding:.4rem 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.5rem}
+.mem-perks li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0}
+.mem-cta{width:100%;justify-content:center}
+</style>
+</head>
+<body>
+<div id="navMount"></div>
+
+<div class="offers-hero">
+  <div class="oh-title">OFFERS & DEALS</div>
+  <div class="oh-sub">Exclusive discounts and rewards for every movie lover. Save big on your next booking.</div>
+</div>
+
+<div class="offers-grid" id="offersGrid"></div>
+
+<section class="membership-section">
+  <div class="section-header"><div><div class="section-title">CINEMAX MEMBERSHIP</div><div class="section-sub">Save more with every visit</div></div></div>
+  <div class="mem-grid">
+    <div class="mem-card">
+      <div class="mem-tier">Silver</div>
+      <div class="mem-price">₹199</div><div class="mem-period">/month</div>
+      <ul class="mem-perks">
+        <li>10% off all tickets</li>
+        <li>Free popcorn once/month</li>
+        <li>Priority booking</li>
+        <li>Birthday discount 20%</li>
+      </ul>
+      <button class="btn btn-outline mem-cta" onclick="joinPlan('Silver')">Get Silver</button>
+    </div>
+    <div class="mem-card featured">
+      <div class="mem-badge2">Most Popular</div>
+      <div class="mem-tier">Gold</div>
+      <div class="mem-price">₹399</div><div class="mem-period">/month</div>
+      <ul class="mem-perks">
+        <li>20% off all tickets</li>
+        <li>Free combo every visit</li>
+        <li>Free premium upgrades</li>
+        <li>Guest passes × 2/month</li>
+        <li>Exclusive screenings</li>
+      </ul>
+      <button class="btn btn-gold mem-cta" onclick="joinPlan('Gold')">Get Gold</button>
+    </div>
+    <div class="mem-card">
+      <div class="mem-tier">Platinum</div>
+      <div class="mem-price">₹699</div><div class="mem-period">/month</div>
+      <ul class="mem-perks">
+        <li>30% off all tickets</li>
+        <li>Unlimited combos</li>
+        <li>VIP lounge access</li>
+        <li>Guest passes × 4/month</li>
+        <li>Premier night invites</li>
+        <li>Dedicated concierge</li>
+      </ul>
+      <button class="btn btn-outline mem-cta" onclick="joinPlan('Platinum')">Get Platinum</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">CINEMAX</div>
+  <div class="footer-links"><a href="index.html">Home</a><a href="movies.html">Movies</a><a href="my-tickets.html">My Tickets</a></div>
+  <div class="footer-copy">© 2026 Cinemax</div>
+</footer>
+
+<script src="shared.js"></script>
+<script>
+document.getElementById("sharedStyle").textContent = SHARED_CSS;
+document.getElementById("navMount").innerHTML = renderNav("offers.html");
+
+const OFFERS = [
+  {icon:"🎟️",tag:"Limited Time",tagClass:"tag-gold",cardClass:"gold-card",title:"First Booking Discount",desc:"New to Cinemax? Get flat ₹100 off your first ticket booking. Valid on all shows and formats.",val:"₹100",valClass:"gold-text",valSub:"OFF YOUR FIRST BOOKING",code:"FIRST100",bg:"🎬",exp:"Valid till March 31, 2026"},
+  {icon:"👫",tag:"Couples Deal",tagClass:"tag-red",cardClass:"red-card",title:"Date Night Special",desc:"Book 2 premium seats together and save big. The perfect excuse for a movie night out.",val:"25%",valClass:"red-text",valSub:"OFF PREMIUM SEATS FOR 2",code:"DATENIGHT",bg:"❤️",exp:"Valid on Fri–Sun shows only"},
+  {icon:"🌅",tag:"Early Bird",tagClass:"tag-teal",cardClass:"teal-card",title:"Morning Show Offer",desc:"Catch the 10 AM show and enjoy deeply discounted tickets. Great films, great savings.",val:"40%",valClass:"teal-text",valSub:"OFF MORNING SHOWS",code:"EARLYBIRD",bg:"☀️",exp:"Valid on all 10:00 AM shows"},
+  {icon:"🎓",tag:"Students",tagClass:"tag-purple",cardClass:"purple-card",title:"Student Discount",desc:"Show your student ID at the counter and get a guaranteed discount on all standard seats.",val:"20%",valClass:"purple-text",valSub:"OFF FOR STUDENTS",code:"STUDENT20",bg:"📚",exp:"Valid Sun–Thu, student ID required"},
+  {icon:"👨‍👩‍👧‍👦",tag:"Family Pack",tagClass:"tag-gold",cardClass:"gold-card",title:"Family Bundle",desc:"Book 4 or more seats in one transaction and unlock special family pricing across all movies.",val:"₹500",valClass:"gold-text",valSub:"OFF ON 4+ SEATS",code:"FAMILY500",bg:"🏠",exp:"Minimum 4 seats required"},
+  {icon:"💳",tag:"Bank Offer",tagClass:"tag-teal",cardClass:"teal-card",title:"HDFC Card Cashback",desc:"Pay with HDFC Debit or Credit card and earn 10% cashback credited within 5 business days.",val:"10%",valClass:"teal-text",valSub:"CASHBACK WITH HDFC CARDS",code:"HDFC10CB",bg:"🏦",exp:"Max cashback ₹150 per transaction"},
+];
+
+document.getElementById("offersGrid").innerHTML = OFFERS.map((o,i)=>`
+  <div class="offer-card ${o.cardClass}">
+    <div class="offer-inner">
+      <div class="offer-icon">${o.icon}</div>
+      <div class="offer-tag ${o.tagClass}">${o.tag}</div>
+      <div class="offer-title">${o.title}</div>
+      <div class="offer-desc">${o.desc}</div>
+      <div class="offer-val ${o.valClass}">${o.val}</div>
+      <div class="offer-val-sub">${o.valSub}</div>
+      <div class="offer-code-box">
+        <span class="offer-code">${o.code}</span>
+        <button class="copy-btn" id="cb${i}" onclick="copyCode('${o.code}',${i})">Copy</button>
+      </div>
+      <div class="offer-exp">🗓 ${o.exp}</div>
+    </div>
+    <div class="offer-bg-deco">${o.bg}</div>
+  </div>
+`).join("");
+
+function copyCode(code, i){
+  navigator.clipboard.writeText(code).catch(()=>{});
+  const btn=document.getElementById("cb"+i);
+  btn.textContent="Copied!"; btn.classList.add("copied");
+  setTimeout(()=>{ btn.textContent="Copy"; btn.classList.remove("copied"); },2000);
+}
+
+function joinPlan(plan){
+  alert(`You've selected the ${plan} membership plan!\n\nIn a full implementation this would redirect to a payment/signup flow.`);
+}
+</script>
+</body>
+</html>
