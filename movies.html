@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CINEMAX — All Movies</title>
+<style id="sharedStyle"></style>
+<style>
+.page-hero{padding:4rem 4rem 2rem;background:linear-gradient(to bottom,var(--surface),var(--bg))}
+.page-hero-title{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;letter-spacing:6px;margin-bottom:.4rem}
+.page-hero-sub{color:var(--muted);font-size:.88rem;letter-spacing:1px}
+
+.filters-bar{display:flex;gap:1rem;flex-wrap:wrap;align-items:center;padding:1.5rem 4rem;border-bottom:1px solid var(--border);position:sticky;top:65px;background:rgba(9,9,14,.97);backdrop-filter:blur(12px);z-index:100}
+.filter-group{display:flex;align-items:center;gap:.5rem}
+.filter-label{font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+select{background:var(--card);border:1.5px solid var(--border);border-radius:8px;padding:.45rem .9rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.8rem;outline:none;cursor:pointer;transition:border-color .2s}
+select:focus,select:hover{border-color:var(--muted)}
+.filter-sep{width:1px;height:20px;background:var(--border)}
+.results-count{margin-left:auto;font-size:.78rem;color:var(--muted)}
+
+.view-toggle{display:flex;gap:.3rem;margin-left:.5rem}
+.view-btn{width:32px;height:32px;border-radius:6px;border:1.5px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.view-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(232,201,109,.08)}
+
+.movies-section{padding:2.5rem 4rem 5rem}
+.movies-list{display:flex;flex-direction:column;gap:1rem}
+.movie-list-item{background:var(--card);border-radius:14px;border:1.5px solid var(--border);display:flex;gap:1.5rem;padding:1.2rem;cursor:pointer;transition:all .25s;align-items:center}
+.movie-list-item:hover{border-color:rgba(232,201,109,.4);transform:translateX(4px)}
+.mli-emoji{font-size:3rem;width:60px;text-align:center;flex-shrink:0}
+.mli-body{flex:1}
+.mli-title{font-weight:600;font-size:1rem;margin-bottom:.3rem}
+.mli-meta{display:flex;gap:1rem;flex-wrap:wrap;font-size:.78rem;color:var(--muted);margin-bottom:.5rem}
+.mli-desc{font-size:.82rem;color:var(--muted);line-height:1.5;max-width:600px}
+.mli-right{display:flex;flex-direction:column;align-items:flex-end;gap:.7rem;flex-shrink:0}
+.mli-price{font-size:.78rem;color:var(--green)}
+.mli-badge{background:var(--accent2);color:#fff;font-size:.6rem;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:3px;text-transform:uppercase}
+
+.no-results{text-align:center;padding:5rem 2rem;color:var(--muted)}
+.no-results-icon{font-size:4rem;margin-bottom:1rem;opacity:.5}
+</style>
+</head>
+<body>
+<div id="navMount"></div>
+
+<div class="page-hero">
+  <div class="page-hero-title">ALL MOVIES</div>
+  <div class="page-hero-sub" id="movieCount">Loading…</div>
+</div>
+
+<div class="filters-bar">
+  <div class="filter-group">
+    <span class="filter-label">Genre</span>
+    <select id="genreFilter" onchange="applyFilters()">
+      <option value="">All Genres</option>
+      <option>Sci-Fi</option><option>Action</option><option>Drama</option>
+      <option>Horror</option><option>Comedy</option><option>Romance</option><option>Thriller</option>
+    </select>
+  </div>
+  <div class="filter-sep"></div>
+  <div class="filter-group">
+    <span class="filter-label">Sort</span>
+    <select id="sortFilter" onchange="applyFilters()">
+      <option value="rating">Top Rated</option>
+      <option value="title">A – Z</option>
+      <option value="price">Price: Low</option>
+    </select>
+  </div>
+  <div class="filter-sep"></div>
+  <div class="filter-group">
+    <span class="filter-label">Format</span>
+    <select id="formatFilter" onchange="applyFilters()">
+      <option value="">All</option>
+      <option value="IMAX">IMAX</option>
+      <option value="4K">4K</option>
+    </select>
+  </div>
+  <span class="results-count" id="resultsCount"></span>
+  <div class="view-toggle">
+    <button class="view-btn active" id="gridViewBtn" onclick="setView('grid')" title="Grid view">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="0" width="7" height="7" rx="1"/><rect x="9" y="0" width="7" height="7" rx="1"/><rect x="0" y="9" width="7" height="7" rx="1"/><rect x="9" y="9" width="7" height="7" rx="1"/></svg>
+    </button>
+    <button class="view-btn" id="listViewBtn" onclick="setView('list')" title="List view">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="1" width="16" height="2" rx="1"/><rect x="0" y="7" width="16" height="2" rx="1"/><rect x="0" y="13" width="16" height="2" rx="1"/></svg>
+    </button>
+  </div>
+</div>
+
+<div class="movies-section">
+  <div id="moviesContainer"></div>
+</div>
+
+<footer>
+  <div class="footer-logo">CINEMAX</div>
+  <div class="footer-links"><a href="index.html">Home</a><a href="offers.html">Offers</a><a href="my-tickets.html">My Tickets</a></div>
+  <div class="footer-copy">© 2026 Cinemax</div>
+</footer>
+
+<script src="shared.js"></script>
+<script>
+document.getElementById("sharedStyle").textContent = SHARED_CSS;
+document.getElementById("navMount").innerHTML = renderNav("movies.html");
+
+let currentView = "grid";
+let filtered = [...MOVIES];
+
+function applyFilters(){
+  const genre  = document.getElementById("genreFilter").value;
+  const sort   = document.getElementById("sortFilter").value;
+  const format = document.getElementById("formatFilter").value;
+  filtered = MOVIES.filter(m=>{
+    if(genre && !m.genre.includes(genre) && !m.tags.includes(genre)) return false;
+    if(format && m.badge !== format) return false;
+    return true;
+  });
+  if(sort==="rating") filtered.sort((a,b)=>b.rating-a.rating);
+  else if(sort==="title") filtered.sort((a,b)=>a.title.localeCompare(b.title));
+  else if(sort==="price") filtered.sort((a,b)=>a.stdPrice-b.stdPrice);
+  document.getElementById("resultsCount").textContent = filtered.length + " films";
+  document.getElementById("movieCount").textContent = filtered.length + " films available now";
+  renderContainer();
+}
+
+function setView(v){
+  currentView = v;
+  document.getElementById("gridViewBtn").classList.toggle("active", v==="grid");
+  document.getElementById("listViewBtn").classList.toggle("active", v==="list");
+  renderContainer();
+}
+
+function renderContainer(){
+  const c = document.getElementById("moviesContainer");
+  if(!filtered.length){
+    c.innerHTML = `<div class="no-results"><div class="no-results-icon">🎬</div><div>No movies match your filters.</div></div>`;
+    return;
+  }
+  if(currentView==="grid"){
+    c.innerHTML = `<div class="movies-grid">${filtered.map(m=>`
+      <div class="movie-card" onclick="location.href='movie-detail.html?id=${m.id}'">
+        <div class="movie-poster">
+          <div class="movie-emoji-bg">${m.emoji}</div>
+          <div class="movie-gradient"></div>
+          ${m.badge?`<div class="movie-badge-tag">${m.badge}</div>`:''}
+        </div>
+        <div class="movie-info">
+          <div class="movie-title-sm">${m.title}</div>
+          <div class="movie-meta-row"><span>${m.genre}</span><span class="star">★${m.rating}</span><span>${m.duration}</span></div>
+        </div>
+      </div>`).join("")}</div>`;
+  } else {
+    c.innerHTML = `<div class="movies-list">${filtered.map(m=>`
+      <div class="movie-list-item" onclick="location.href='movie-detail.html?id=${m.id}'">
+        <div class="mli-emoji">${m.emoji}</div>
+        <div class="mli-body">
+          <div class="mli-title">${m.title}</div>
+          <div class="mli-meta">
+            <span class="star">★${m.rating}</span><span>${m.genre}</span>
+            <span>${m.duration}</span><span>${m.language}</span>
+          </div>
+          <div class="mli-desc">${m.desc}</div>
+        </div>
+        <div class="mli-right">
+          ${m.badge?`<div class="mli-badge">${m.badge}</div>`:''}
+          <div class="mli-price">From ₹${m.stdPrice}</div>
+          <a href="booking.html?id=${m.id}" class="btn btn-gold" style="padding:.55rem 1.2rem;font-size:.75rem" onclick="event.stopPropagation()">Book</a>
+        </div>
+      </div>`).join("")}</div>`;
+  }
+}
+
+applyFilters();
+</script>
+</body>
+</html>
